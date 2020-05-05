@@ -31,10 +31,10 @@ node {
         ).trim()
     }
 
-    def result = (${COVERAGE_SUMM} =~ /[0-9.]+%/).findAll()
+    def result = (COVERAGE_SUMM =~ /[0-9.]+%/).findAll()
     echo result
 
-    echo "cov sum = ${COVERAGE_SUMM}"
+    // echo "cov sum = ${COVERAGE_SUMM}"
     
     
        

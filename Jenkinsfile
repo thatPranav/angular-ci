@@ -12,9 +12,9 @@ node {
     // stash code & dependencies to expedite subsequent testing
     // and ensure same code & dependencies are used throughout the pipeline
     // stash is a temporary archive
-    stash name: 'everything', 
-        //   excludes: 'test-results/**', 
-          includes: '**'
+    // stash name: 'everything', 
+    //     //   excludes: 'test-results/**', 
+    //       includes: '**'
     
     // test with PhantomJS for "fast" "generic" results
     // on windows use: bat 'npm run test-single-run -- --browsers PhantomJS'

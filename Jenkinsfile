@@ -25,8 +25,12 @@ node {
     //       testResults: 'coverage/angular-ci/src/index.html'])
 
     script {
-      COVERAGE_SUMM = sh(returnStdout: true, script: 'ng test --code-coverage')
+        COVERAGE_SUMM = sh(
+            returnStdout: true, 
+            script: 'ng test --code-coverage'
+        ).trim()
     }
+    
     echo "cov sum = ${COVERAGE_SUMM}"
        
 }

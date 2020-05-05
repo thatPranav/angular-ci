@@ -31,12 +31,11 @@ node {
         ).trim()
     }
 
-    // def result = (${COVERAGE_SUMM} =~ /[0-9.]+%/).findAll()
-    // echo "cov sum = ${COVERAGE_SUMM}"
+    def result = (COVERAGE_SUMM =~ /[0-9.]+%/).findAll()
+
+    echo result
     
-    // assert COVERAGE_SUMM =~ /[0-9.]+%/
-    sh 'if [[ ${COVERAGE_SUMM} =~ "/[0-9.]+%/"]]; then echo ${BASH_REMATCH[1]}; fi'
-    // echo "${COVERAGE_SUMM}"
+
 
     
     

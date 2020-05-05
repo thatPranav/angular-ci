@@ -18,12 +18,17 @@ node {
     
     // test with PhantomJS for "fast" "generic" results
     // on windows use: bat 'npm run test-single-run -- --browsers PhantomJS'
-    sh 'ng test'
+    // sh 'ng test'
     
     // archive karma test results (karma is configured to export junit xml files)
     // step([$class: 'JUnitResultArchiver', 
     //       testResults: 'coverage/angular-ci/src/index.html'])
-          
+
+    script {
+      COVERAGE_SUMM = sh(returnStdout: true, script: 'ng test --code-coverage')
+    }
+    echo "cov sum = ${COVERAGE_SUMM}"
+       
 }
 
 // node('linux') {

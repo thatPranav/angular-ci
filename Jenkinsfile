@@ -36,6 +36,8 @@ node {
     
     assert COVERAGE_SUMM =~ /[0-9.]+%/
 
+    echo "${COVERAGE_SUMM}"
+
     
     
        

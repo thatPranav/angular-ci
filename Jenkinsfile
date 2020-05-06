@@ -33,12 +33,8 @@ node {
 
     def result = (COVERAGE_SUMM =~ /[0-9.]+%/).findAll()
 
-    echo result
-    
+    // echo result
 
-
-    
-    
        
 }
 

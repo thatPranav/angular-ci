@@ -27,17 +27,17 @@ node {
         if (statements > 70 && branches > 70 && functions > 70 && lines > 70){
             sh 'docker build -t angular-ci:v1 .'
             sh 'docker run --rm -d -p 80:80/tcp angular-ci:v1'
-            notify('Deployment to staging done!')
+            // notify('Deployment to staging done!')
         }
         else {
-            notify('Code coverage below 70%')
+            // notify('Code coverage below 70%')
         }
     }
     
 
 }
 
-
+// mailhog needed to send email!
 def notify(status){
     emailext (
         to: "jawajipranav@gmail.com",

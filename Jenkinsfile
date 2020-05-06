@@ -9,12 +9,6 @@ node {
         sh 'npm install'
     }
 
-    stage('stash code and dependencies'){
-        stash name: 'everything', 
-        //   excludes: 'test-results/**', 
-          includes: '**'
-    }
-
     stage('get code coverage') {
         script {
             COVERAGE_SUMM = sh(
@@ -31,8 +25,6 @@ node {
         def functions = result[2].substring(0, result[2].length() - 1).toInteger(); 
         def lines = result[3].substring(0, result[3].length() - 1).toInteger(); 
         if (statements > 70 && branches > 70 && functions > 70 && lines > 70){
-            sh 'rm -rf *'
-            unstash 'everything'
             sh 'docker build -t angular-ci:v1 .'
             sh 'docker run --rm -d -p 80:80/tcp angular-ci:v1'
             notify('Deployment to staging done!')

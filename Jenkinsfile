@@ -1,67 +1,32 @@
-stage 'CI'
 node {
-    
-    checkout scm
-    //git branch: 'jenkins2-course', 
+    stage('clone repo') {
+        checkout scm
         url: 'https://github.com/thatPranav/angular-ci'
-
-    // pull dependencies from npm
-    // on windows use: bat 'npm install'
-    sh 'npm install'
-
-    // stash code & dependencies to expedite subsequent testing
-    // and ensure same code & dependencies are used throughout the pipeline
-    // stash is a temporary archive
-    // stash name: 'everything', 
-    //     //   excludes: 'test-results/**', 
-    //       includes: '**'
+    }
     
-    // test with PhantomJS for "fast" "generic" results
-    // on windows use: bat 'npm run test-single-run -- --browsers PhantomJS'
-    // sh 'ng test'
-    
-    // archive karma test results (karma is configured to export junit xml files)
-    // step([$class: 'JUnitResultArchiver', 
-    //       testResults: 'coverage/angular-ci/src/index.html'])
-
-    script {
-        COVERAGE_SUMM = sh(
-            returnStdout: true, 
-            script: 'ng test --code-coverage'
-        ).trim()
+    stage('npm install') {
+        sh 'npm install'
     }
 
-    def result = (COVERAGE_SUMM =~ /[0-9.]+%/).findAll()
+    stage('get code coverage') {
+        script {
+            COVERAGE_SUMM = sh(
+                returnStdout: true, 
+                script: 'ng test --code-coverage'
+            ).trim()
+        }
+    }
 
-    echo result[0]
+    stage('check code coverage') {
+        def result = (COVERAGE_SUMM =~ /[0-9.]+%/).findAll()
+        echo result[1]
+    }
+    
 
-       
 }
 
-// node('linux') {
-//     sh 'ls'
-//     sh 'rm -rf *'
-//     unstash 'everything'
-//     sh 'ls'
-// }
 
-// //parallel
-// stage 'Browser Testing'
-// parallel chrome: {
-//     runTests("Chrome")
-// }, firefox: {
-//     runTests("Firefox")
-// }
 
-// def runTests(browser) {
-//     node {
-//         sh 'rm -rf *'
-//         unstash 'everything'
-//         sh "npm run test-single-run -- --browsers ${browser}"
-//         step([$class: 'JUnitResultArchiver', 
-//               testResults: 'test-results/**/test-results.xml'])
-//     }
-// }
 
 // def notify(status){
 //     emailext (

@@ -1,4 +1,13 @@
 node {
+    def notify(status){
+        emailext (
+        to: "jawajipranav@gmail.com",
+        subject: "${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+        body: """<p>${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
+            <p>Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></p>""",
+        )
+    }
+
     stage('clone repo') {
         checkout scm
         url: 'https://github.com/thatPranav/angular-ci'
@@ -17,9 +26,20 @@ node {
         }
     }
 
-    stage('check code coverage') {
+    stage('check code coverage and deploy') {
         def result = (COVERAGE_SUMM =~ /[0-9.]+%/).findAll()
-        echo result[1]
+        def statements = result[0].substring(0, result[0].length() - 1).toInteger(); 
+        def branches = result[1].substring(0, result[1].length() - 1).toInteger(); 
+        def functions = result[2].substring(0, result[2].length() - 1).toInteger(); 
+        def lines = result[3].substring(0, result[3].length() - 1).toInteger(); 
+        if (statements > 70 && branches > 70 && functions > 70 && lines > 70){
+            sh 'docker build -t angular-ci:v1'
+            sh 'docker run --rm -d -p 80:80/tcp angular-ci:v1'
+            notify('Deployment to staging done!')
+        }
+        else {
+            notify('Code coverage below 70%')
+        }
     }
     
 
@@ -28,20 +48,7 @@ node {
 
 
 
-// def notify(status){
-//     emailext (
-//       to: "jawajipranav@gmail.com",
-//       subject: "${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-//       body: """<p>${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
-//         <p>Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></p>""",
-//     )
-// }
 
-// node {
-//     notify("Deploy to staging?")
-// }
-
-// input "Deploy to staging?"
 
 // stage name: 'Deploy to staging', concurrency: 1
 // node {
